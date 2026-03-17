@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_app/ui/widget/count_button.dart';
 
 import '../../bloc/cart/cart_bloc.dart';
 import '../../bloc/cart/cart_event.dart';
@@ -25,7 +26,7 @@ class CartView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildProductCard(context, state),
+                _BuildProductCard(state: state, applePrice: _applePrice),
                 const SizedBox(height: 24),
                 _BuildLeaveAtDoorOption(state: state),
                 const Spacer(),
@@ -37,87 +38,70 @@ class CartView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildProductCard(BuildContext context, CartState state) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.lime.shade100,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.apple,
-                size: 48,
-                color: Colors.red,
-              ),
+class _BuildProductCard extends StatelessWidget {
+  const _BuildProductCard({required this.state, required int applePrice})
+      : _applePrice = applePrice;
+
+  final CartState state;
+  final int _applePrice;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.lime.shade100,
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'りんご',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '¥$_applePrice',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.lime.shade700,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                ],
-              ),
+            child: Image.asset('assets/images/apple.jpg', fit: BoxFit.cover),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'りんご',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '¥$_applePrice',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.lime.shade700,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
             ),
-            _buildQuantitySelector(context, state),
-          ],
-        ),
+          ),
+          _BuildQuantitySelector(state: state),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildQuantitySelector(BuildContext context, CartState state) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.lime.shade300),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            onPressed: state.quantity > 0
-                ? () => context.read<CartBloc>().add(CartQuantityDecremented())
-                : null,
-            icon: const Icon(Icons.remove),
-            color: Colors.lime.shade700,
-          ),
-          SizedBox(
-            width: 40,
-            child: Text(
-              '${state.quantity}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ),
-          IconButton(
-            onPressed: () =>
-                context.read<CartBloc>().add(CartQuantityIncremented()),
-            icon: const Icon(Icons.add),
-            color: Colors.lime.shade700,
-          ),
-        ],
-      ),
+class _BuildQuantitySelector extends StatelessWidget {
+  const _BuildQuantitySelector({required this.state});
+
+  final CartState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return QuantitySelector(
+      quantity: state.quantity,
+      onIncrement: () =>
+          context.read<CartBloc>().add(CartQuantityIncremented()),
+      onDecrement: () =>
+          context.read<CartBloc>().add(CartQuantityDecremented()),
     );
   }
 }
