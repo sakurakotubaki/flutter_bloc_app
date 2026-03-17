@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_app/utils/logger.dart';
 
 import 'ui/cart/cart_page.dart';
 
@@ -16,7 +15,7 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
-    if (bloc is Cubit) print(change);
+    if (bloc is Cubit) LoggerUtils.d(change);
   }
 
   @override
@@ -25,7 +24,7 @@ class AppBlocObserver extends BlocObserver {
     Transition<dynamic, dynamic> transition,
   ) {
     super.onTransition(bloc, transition);
-    print(transition);
+    LoggerUtils.d(transition);
   }
 }
 
