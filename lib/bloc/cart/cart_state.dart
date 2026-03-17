@@ -16,4 +16,8 @@ class CartState {
       leaveAtDoor: leaveAtDoor ?? this.leaveAtDoor,
     );
   }
+
+  @override
+  String toString() =>
+      'CartState(quantity: $quantity, leaveAtDoor: $leaveAtDoor)';
 }
